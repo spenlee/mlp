@@ -39,8 +39,8 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', 'Restangular', '$http',
-	function($scope, packages, ngTableParams, $filter, $mdDialog, Restangular, $http){
+.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', '$http', 'Packages',
+	function($scope, packages, ngTableParams, $filter, $mdDialog, $http, Packages){
 
 	$scope.items = packages;
 
@@ -90,7 +90,6 @@ var app = angular.module('drf-angular', [
 			$scope.packages['data'].splice(i, 1);
 			$scope.showSuccess();
 		}, function(error) {
-			console.log(error);
 			$scope.showFail();
 		});
 	}

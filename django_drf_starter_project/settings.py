@@ -93,3 +93,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+#     $ export NGROK=1234abcd
+#        or
+#     $ export NGROK_URL=https://1234abcd.ngrok.io
+#     $ python manage.py <command>
+
+ngrok = os.environ.get('NGROK', '')
+ngrok_url = os.environ.get('NGROK_URL', 'https://' + ngrok + '.ngrok.io')
+del ngrok
+del ngrok_url
