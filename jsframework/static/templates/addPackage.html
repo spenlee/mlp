@@ -1,0 +1,71 @@
+<md-dialog flex="50">
+    <form name="addPackageForm">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Log a Package</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="closeDialog()">
+                    <md-icon md-font-library="material-icons">clear</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <md-content layout-gt-sm="row" layout-padding>
+                <div>
+                    <md-input-container class="md-icon-float">
+                        <label>Tracking Number</label>
+                        <md-icon md-font-library="material-icons">label</md-icon>
+                        <input name="tracking_number" ng-model="form.tracking_number" required>
+                        <div ng-messages="addPackageForm.tracking_number.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must supply a tracking number.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </md-content>
+
+            <md-content layout-gt-sm="row" layout-padding>
+                <div>
+                    <md-input-container class="md-icon-float">
+                        <label>First Name</label>
+                        <md-icon md-font-library="material-icons">perm_identity</md-icon>
+                        <input name="first_name" ng-model="form.first_name" required>
+                        <div ng-messages="addPackageForm.first_name.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must supply a first name.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>Last Name</label>
+                        <input name="last_name" ng-model="form.last_name" required>
+                        <div ng-messages="addPackageForm.last_name.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must supply a last name.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </md-content>
+
+            <md-content layout-padding>
+                <div>
+                    <md-input-container class="md-icon-float md-block">
+                        <label>Address</label>
+                        <md-icon md-font-library="material-icons">location_on</md-icon>
+                        <input name="address" ng-model="form.address" required>
+                        <div ng-messages="addPackageForm.last_name.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must supply an address.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </md-content>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="logPackage()"
+                       style="margin-right:20px;"
+                       ng-disabled="addPackageForm.$invalid">
+                Submit
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

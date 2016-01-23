@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 from models import Package
 from serializers import PackageSerializer
@@ -10,10 +11,17 @@ def index(request):
 
 
 class PackageListCreateView(generics.ListCreateAPIView):
-    queryset = Package.objects.all()
     serializer_class = PackageSerializer
+    permission_classes = (AllowAny,)
+
+
+    def get_queryset(self):
+        return Package.objects.filter(archived=False)
 
 
 class PackageRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = Package.objects.all()
     serializer_class = PackageSerializer
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        return Package.objects.filter(archived=False)

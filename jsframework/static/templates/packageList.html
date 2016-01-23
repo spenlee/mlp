@@ -1,10 +1,21 @@
-<md-toolbar>
-    <div class="md-toolbar-tools">Packages Arrived</div>
+<md-toolbar layout="row">
+    <md-button class="md-fab" ng-click="addPackage($event)">
+        <md-icon md-font-library="material-icons">add circle</md-icon>
+    </md-button>
+    <h3 class="md-toolbar-tools">
+        Packages Arrived
+    </h3>
 </md-toolbar>
 
 <div layout="row">
     <table ng-table="packages" class="table table-striped" show-filter="true">
         <tr ng-repeat="package in $data">
+
+            <td>
+                <md-button class="md-fab md-warn md-mini" ng-click="delPackage($event, package)">
+                    <md-icon md-font-library="material-icons">clear</md-icon>
+                </md-button>
+            </td>
 
             <td class="text-center" title="'First Name'" filter="{ first_name: 'text'}" sortable="'first_name'">
                 {{package.first_name}}

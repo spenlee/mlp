@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial', 'ngTable'
+	'ui.router', 'restangular', 'ngMaterial', 'ngTable', 'ngCookies'
 ])
 
 
@@ -8,6 +8,12 @@ var app = angular.module('drf-angular', [
     .primaryPalette('blue-grey')
     .accentPalette('orange');
 })*/
+
+.run(['$cookies', '$http', function($cookies, $http) {
+		// IMPORTANT. needed for django's CSRF protection.
+		$http.defaults.headers.common['X-CSRFToken'] = $cookies.get('csrftoken');
+	}
+])
 
 
 .config(function($stateProvider, $urlRouterProvider){
@@ -39,8 +45,8 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter',
-	function($scope, packages, ngTableParams, $filter){
+.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', 'Restangular',
+	function($scope, packages, ngTableParams, $filter, $mdDialog, Restangular){
 
 	$scope.items = packages;
 
@@ -55,7 +61,114 @@ var app = angular.module('drf-angular', [
 			$defer.resolve($scope.data);
 		}
 	});
+
+	$scope.addPackage = addPackage;
+
+	function addPackage($event) {
+		var parentEl = angular.element(document.body);
+		$mdDialog.show({
+			parent: parentEl,
+			targetEvent: $event,
+			templateUrl:'/static/templates/addPackage.html',
+			controller: 'AddPackageController'
+		})
+		.then(function(item) {
+			$scope.items.push(item);
+			$scope.showSuccess();
+		}), function() {
+			$scope.showFail();
+		};
+	}
+
+	$scope.delPackage = delPackage;
+
+	function delPackage($event, item) {
+		Restangular.one('api/packages', item.tracking_number).get()
+
+		.then(function(res) {
+			res.archived = true;
+			res.save()
+
+				.then(function (res) {
+					var i = 0;
+					while (item.tracking_number !== $scope.packages[i]) {
+						i++;
+					}
+					$scope.splice($scope.indexOf(i), 1);
+					$scope.showSuccess();
+				}, function (error) {
+					console.log(error);
+					$scope.showFail();
+				});
+		}, function (error) {
+			console.log(error);
+			$scope.showFail();
+		});
+
+		/*item.archived = true;
+
+		item.patch()
+
+		.then(function(res) {
+			var i = 0;
+			while (item.tracking_number !== $scope.packages[i]) {
+				i++;
+			}
+			$scope.splice($scope.indexOf(i), 1);
+			$scope.showSuccess();
+		}, function(error) {
+			console.log(error);
+			$scope.showFail();
+		});*/
+	}
+
+	$scope.showSuccess = showSuccess;
+
+	function showSuccess() {
+		$mdDialog.show(
+			$mdDialog.alert()
+				.parent(angular.element(document.querySelector('#popupContainer')))
+				.clickOutsideToClose(true)
+				.title('Success!')
+				.textContent('Yes.')
+				.ariaLabel('Success Dialog')
+				.ok('Got it!')
+		);
+	};
+
+	$scope.showFail = showFail;
+	function showFail() {
+		$mdDialog.show(
+			$mdDialog.alert()
+				.parent(angular.element(document.querySelector('#popupContainer')))
+				.clickOutsideToClose(true)
+				.title('Oh no!')
+				.textContent('Error occurred.')
+				.ariaLabel('Error Dialog')
+				.ok('Ok')
+		);
+	};
 }])
+
+
+.controller('AddPackageController', ['$scope', '$mdDialog', 'Packages', function ($scope, $mdDialog, Packages) {
+	$scope.form = {};
+
+	$scope.logPackage = logPackage;
+
+	function logPackage() {
+		Packages.post($scope.form)
+
+		.then(function(response) {
+			$mdDialog.hide(response);
+		})
+	}
+
+	$scope.closeDialog = function () {
+		$mdDialog.cancel();
+	}
+}])
+
 
 .factory('Packages', ['Restangular', function (Restangular) {
 	return Restangular.service('api/packages');
