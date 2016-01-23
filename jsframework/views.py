@@ -19,7 +19,7 @@ class PackageListCreateView(generics.ListCreateAPIView):
         return Package.objects.filter(archived=False)
 
 
-class PackageRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+class PackageRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageSerializer
     permission_classes = (AllowAny,)
 

@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial', 'ngTable', 'ngCookies'
+	'ui.router', 'restangular', 'ngMaterial', 'ngTable'
 ])
 
 
@@ -9,11 +9,30 @@ var app = angular.module('drf-angular', [
     .accentPalette('orange');
 })*/
 
-.run(['$cookies', '$http', function($cookies, $http) {
-		// IMPORTANT. needed for django's CSRF protection.
-		$http.defaults.headers.common['X-CSRFToken'] = $cookies.get('csrftoken');
+
+/*.config(function(RestangularProvider) {
+	RestangularProvider.setDefaultHeaders({
+		'Content-Type': 'application/json',
+		'X-Requested-With': 'XMLHttpRequest'
+	});
+	RestangularProvider.setDefaultHttpFields({
+		'withCredentials': true
+	});
+})
+
+.config([
+	'$httpProvider',
+	function($httpProvider) {
+		$httpProvider.defaults.withCredentials = true;
+		$httpProvider.defaults.useXDomain = true;
+  		delete $httpProvider.defaults.headers.common['X-Requested-With'];
 	}
 ])
+
+.run(['$cookies', '$http', function($cookies, $http) {
+		$http.defaults.headers.common['X-CSRFToken'] = $cookies.get('csrftoken');
+	}
+])*/
 
 
 .config(function($stateProvider, $urlRouterProvider){
@@ -45,8 +64,8 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', 'Restangular',
-	function($scope, packages, ngTableParams, $filter, $mdDialog, Restangular){
+.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', 'Restangular', '$http',
+	function($scope, packages, ngTableParams, $filter, $mdDialog, Restangular, $http){
 
 	$scope.items = packages;
 
@@ -83,7 +102,7 @@ var app = angular.module('drf-angular', [
 	$scope.delPackage = delPackage;
 
 	function delPackage($event, item) {
-		Restangular.one('api/packages', item.tracking_number).get()
+		/*Restangular.one('api/packages', item.tracking_number).get()
 
 		.then(function(res) {
 			res.archived = true;
@@ -103,11 +122,38 @@ var app = angular.module('drf-angular', [
 		}, function (error) {
 			console.log(error);
 			$scope.showFail();
+		});*/
+
+		item.archived = true;
+
+		$http.patch('/api/packages/'+item.tracking_number, item)
+		.then( function(res) {
+			var i = 0;
+			while (item.tracking_number !== $scope.packages[i]) {
+				i++;
+			}
+			$scope.splice($scope.indexOf(i), 1);
+			$scope.showSuccess();
+		}, function(error) {
+			console.log(error);
+			$scope.showFail();
 		});
+
+
+
+		/*item.remove()
+
+		.then( function(res) {
+			$scope.showSuccess();
+		}, function(error) {
+			console.log(error);
+			$scope.showFail();
+		});
+*/
 
 		/*item.archived = true;
 
-		item.patch()
+		item.put()
 
 		.then(function(res) {
 			var i = 0;
