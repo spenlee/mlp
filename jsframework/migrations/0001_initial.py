@@ -13,10 +13,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Package',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tracking_number', models.PositiveIntegerField(serialize=False, primary_key=True)),
                 ('first_name', models.CharField(max_length=252)),
                 ('last_name', models.CharField(max_length=252)),
                 ('address', models.CharField(max_length=252)),
+                ('log_date', models.DateTimeField(auto_now_add=True)),
+                ('pickup_date', models.DateTimeField(null=True)),
             ],
         ),
     ]
