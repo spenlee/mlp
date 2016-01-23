@@ -1,5 +1,35 @@
-<div class='row text-center'>
-	<h1>Packages Arrived</h1>
+<md-toolbar>
+    <div class="md-toolbar-tools">Packages Arrived</div>
+</md-toolbar>
 
-	<pre>{{ packages | json:4 }}</pre>
+<div layout="row">
+    <table ng-table="packages" class="table table-striped" show-filter="true">
+        <tr ng-repeat="package in $data">
+
+            <td class="text-center" title="'First Name'" filter="{ first_name: 'text'}" sortable="'first_name'">
+                {{package.first_name}}
+            </td>
+
+            <td class="text-center" title="'Last Name'" filter="{ last_name: 'text'}" sortable="'last_name'">
+                {{package.last_name}}
+            </td>
+
+            <td class="text-center" title="'Tracking Number'" filter="{ tracking_number: 'number'}">
+                {{package.tracking_number}}
+            </td>
+
+            <td class="text-center" title="'Address'" filter="{ address: 'text'}" sortable="'address'">
+                {{package.address}}
+            </td>
+
+            <td class="text-center" title="'Log Date'" filter="{ log_date: 'text'}" sortable="'log_date'">
+                {{package.log_date | date:'EEE MMM d yyyy, h:mm a'}}
+            </td>
+
+            <td class="text-center" title="'Pickup Date'" filter="{ pickup_date: 'text'}" sortable="'pickup_date'">
+                {{package.pickup_date | date:'EEE MMM d yyyy, h:mm a'}}
+            </td>
+
+        </tr>
+    </table>
 </div>

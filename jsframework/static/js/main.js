@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial',
+	'ui.router', 'restangular', 'ngMaterial', 'ngTable'
 ])
 
 
@@ -39,8 +39,22 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', 'packages', function($scope, packages){
-	$scope.packages = packages;
+.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter',
+	function($scope, packages, ngTableParams, $filter){
+
+	$scope.items = packages;
+
+	$scope.packages = new ngTableParams({
+		page: 1,
+		count: 10
+	}, {
+		getData: function ($defer, params) {
+			$scope.data = params.sorting() ? $filter('orderBy')($scope.items, params.orderBy()) : $scope.items;
+			$scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
+			$scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+			$defer.resolve($scope.data);
+		}
+	});
 }])
 
 .factory('Packages', ['Restangular', function (Restangular) {
