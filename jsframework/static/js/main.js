@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial', 'ngTable'
+	'ui.router', 'restangular', 'ngMaterial', 'ngTable', 'ngTableToCsv'
 ])
 
 
@@ -8,31 +8,6 @@ var app = angular.module('drf-angular', [
     .primaryPalette('blue-grey')
     .accentPalette('orange');
 })*/
-
-
-/*.config(function(RestangularProvider) {
-	RestangularProvider.setDefaultHeaders({
-		'Content-Type': 'application/json',
-		'X-Requested-With': 'XMLHttpRequest'
-	});
-	RestangularProvider.setDefaultHttpFields({
-		'withCredentials': true
-	});
-})
-
-.config([
-	'$httpProvider',
-	function($httpProvider) {
-		$httpProvider.defaults.withCredentials = true;
-		$httpProvider.defaults.useXDomain = true;
-  		delete $httpProvider.defaults.headers.common['X-Requested-With'];
-	}
-])
-
-.run(['$cookies', '$http', function($cookies, $http) {
-		$http.defaults.headers.common['X-CSRFToken'] = $cookies.get('csrftoken');
-	}
-])*/
 
 
 .config(function($stateProvider, $urlRouterProvider){
@@ -77,6 +52,7 @@ var app = angular.module('drf-angular', [
 			$scope.data = params.sorting() ? $filter('orderBy')($scope.items, params.orderBy()) : $scope.items;
 			$scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
 			$scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+			params.total($scope.data.length);
 			$defer.resolve($scope.data);
 		}
 	});
@@ -92,7 +68,7 @@ var app = angular.module('drf-angular', [
 			controller: 'AddPackageController'
 		})
 		.then(function(item) {
-			$scope.items.push(item);
+			$scope.packages['data'].push(item);
 			$scope.showSuccess();
 		}), function() {
 			$scope.showFail();
@@ -102,70 +78,21 @@ var app = angular.module('drf-angular', [
 	$scope.delPackage = delPackage;
 
 	function delPackage($event, item) {
-		/*Restangular.one('api/packages', item.tracking_number).get()
-
-		.then(function(res) {
-			res.archived = true;
-			res.save()
-
-				.then(function (res) {
-					var i = 0;
-					while (item.tracking_number !== $scope.packages[i]) {
-						i++;
-					}
-					$scope.splice($scope.indexOf(i), 1);
-					$scope.showSuccess();
-				}, function (error) {
-					console.log(error);
-					$scope.showFail();
-				});
-		}, function (error) {
-			console.log(error);
-			$scope.showFail();
-		});*/
 
 		item.archived = true;
 
 		$http.patch('/api/packages/'+item.tracking_number, item)
 		.then( function(res) {
 			var i = 0;
-			while (item.tracking_number !== $scope.packages[i]) {
+			while (item.tracking_number !== $scope.packages['data'][i].tracking_number) {
 				i++;
 			}
-			$scope.splice($scope.indexOf(i), 1);
+			$scope.packages['data'].splice(i, 1);
 			$scope.showSuccess();
 		}, function(error) {
 			console.log(error);
 			$scope.showFail();
 		});
-
-
-
-		/*item.remove()
-
-		.then( function(res) {
-			$scope.showSuccess();
-		}, function(error) {
-			console.log(error);
-			$scope.showFail();
-		});
-*/
-
-		/*item.archived = true;
-
-		item.put()
-
-		.then(function(res) {
-			var i = 0;
-			while (item.tracking_number !== $scope.packages[i]) {
-				i++;
-			}
-			$scope.splice($scope.indexOf(i), 1);
-			$scope.showSuccess();
-		}, function(error) {
-			console.log(error);
-			$scope.showFail();
-		});*/
 	}
 
 	$scope.showSuccess = showSuccess;

@@ -1,0 +1,24 @@
+{
+  "name": "bower.json",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Spencer Lee <spencerlee@email.arizona.edu>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/spenlee/mlp",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-cookies": "~1.4.9",
+    "ng-table-to-csv": "~0.3.0",
+    "ng-table": "~0.8.3"
+  }
+}

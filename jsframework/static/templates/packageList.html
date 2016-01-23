@@ -2,13 +2,19 @@
     <md-button class="md-fab" ng-click="addPackage($event)">
         <md-icon md-font-library="material-icons">add circle</md-icon>
     </md-button>
+        <a ng-click="csv.generate()" ng-href="{{ csv.link() }}" download="my-little-package.txt">
+            <md-button class="md-fab">
+                <md-icon md-font-library="material-icons">description</md-icon>
+            </md-button>
+        </a>
     <h3 class="md-toolbar-tools">
         Packages Arrived
     </h3>
+    <span flex></span>
 </md-toolbar>
 
 <div layout="row">
-    <table ng-table="packages" class="table table-striped" show-filter="true">
+    <table ng-table="packages" class="table table-striped" export-csv="csv" separator=";" show-filter="true">
         <tr ng-repeat="package in $data">
 
             <td>
