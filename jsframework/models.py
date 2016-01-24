@@ -20,3 +20,10 @@ class Student(models.Model):
     phone_number = models.CharField(max_length=11, unique=True)
     sms_number = models.CharField(max_length=11, unique=True)
     address = models.CharField(max_length=252)
+
+
+class ScanData(models.Model):
+    first_name = models.CharField(max_length=252)
+    last_name = models.CharField(max_length=252)
+    address = models.CharField(max_length=252)
+    # tracking_number
