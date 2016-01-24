@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class Package(models.Model):
-    tracking_number = models.PositiveIntegerField(primary_key=True)
+    tracking_number = models.CharField(max_length=25, primary_key=True)
     first_name = models.CharField(max_length=252)
     last_name = models.CharField(max_length=252)
     address = models.CharField(max_length=252)

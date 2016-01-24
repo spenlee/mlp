@@ -15,7 +15,7 @@ var app = angular.module('drf-angular', [
 		.state('home', {
 			url: '/',
 			templateUrl: '/static/templates/home.html',
-			controller: 'MainCtrl'
+			/*controller: 'MainCtrl'*/
 		})
 
 		.state('packages', {
@@ -28,15 +28,23 @@ var app = angular.module('drf-angular', [
 					}
 				]
 			}
+		})
+
+		.state('about', {
+			url: '/about',
+			templateUrl: '/static/templates/about.html',
+			controller: 'AboutCtrl'
 		});
 
 	$urlRouterProvider.otherwise('/');
 })
 
 
+/*
 .controller('MainCtrl', ['$scope', function($scope){
 	$scope.test = "Welcome to My Little Package!";
 }])
+*/
 
 
 .controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'packages', 'Restangular',
@@ -170,5 +178,10 @@ var app = angular.module('drf-angular', [
 
 .factory('Packages', ['Restangular', function (Restangular) {
 	return Restangular.service('api/packages');
+}])
+
+
+.controller('AboutCtrl', ['$scope', function($scope){
+	$scope.description = "About This Project!";
 }]);
 

@@ -7,12 +7,24 @@
     <md-button class="md-fab" ng-csv="getArray()"
                csv-header="['Tracking', 'First Name', 'Last Name', 'Address', 'Log Date', 'Pickup Date', 'Archived?']"
                filename="mlp.csv">
-        <md-icon md-font-library="material-icons">description</md-icon>
+        <md-icon md-font-library="material-icons">get_app</md-icon>
     </md-button>
 
     <div class="md-toolbar-tools">
         <span>Packages Arrived</span>
     </div>
+
+    <a ui-sref="home">
+        <md-button class="md-fab">
+            <md-icon md-font-library="material-icons">home</md-icon>
+        </md-button>
+    </a>
+
+    <a ui-sref="about">
+        <md-button class="md-fab">
+            <md-icon md-font-library="material-icons">info_outline</md-icon>
+        </md-button>
+    </a>
 </md-toolbar>
 
 <md-table-container>
