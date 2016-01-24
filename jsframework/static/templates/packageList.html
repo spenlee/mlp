@@ -1,4 +1,4 @@
-<md-toolbar layout="row">
+{% comment %}<md-toolbar layout="row">
     <md-button class="md-fab" ng-click="addPackage($event)">
         <md-icon md-font-library="material-icons">add circle</md-icon>
     </md-button>
@@ -11,42 +11,43 @@
         Packages Arrived
     </h3>
     <span flex></span>
+</md-toolbar>{% endcomment %}
+
+<md-toolbar class="md-table-toolbar md-default">
+    <div class="md-toolbar-tools">
+        <span>Packages Arrived</span>
+    </div>
 </md-toolbar>
 
-<div layout="row">
-    <table ng-table="packages" class="table table-striped" export-csv="csv" separator=";" show-filter="true">
-        <tr ng-repeat="package in $data">
-
-            <td>
-                <md-button class="md-fab md-warn md-mini" ng-click="delPackage($event, package)">
-                    <md-icon md-font-library="material-icons">clear</md-icon>
-                </md-button>
-            </td>
-
-            <td class="text-center" title="'First Name'" filter="{ first_name: 'text'}" sortable="'first_name'">
-                {{package.first_name}}
-            </td>
-
-            <td class="text-center" title="'Last Name'" filter="{ last_name: 'text'}" sortable="'last_name'">
-                {{package.last_name}}
-            </td>
-
-            <td class="text-center" title="'Tracking Number'" filter="{ tracking_number: 'number'}">
-                {{package.tracking_number}}
-            </td>
-
-            <td class="text-center" title="'Address'" filter="{ address: 'text'}" sortable="'address'">
-                {{package.address}}
-            </td>
-
-            <td class="text-center" title="'Log Date'" filter="{ log_date: 'text'}" sortable="'log_date'">
-                {{package.log_date | date:'EEE MMM d yyyy, h:mm a'}}
-            </td>
-
-            <td class="text-center" title="'Pickup Date'" filter="{ pickup_date: 'text'}" sortable="'pickup_date'">
-                {{package.pickup_date | date:'EEE MMM d yyyy, h:mm a'}}
-            </td>
-
+<md-table-container>
+    <table md-table md-row-select ng-model="selected" md-progress="">
+        <thead md-head md-order="query" md-on-reorder="">
+        <tr md-row>
+            <th md-column md-order-by="nameToLower"><span>Dessert (100g serving)</span></th>
+            <th md-column md-numeric md-order-by="calories.value"><span>Calories</span></th>
+            <th md-column md-numeric>Fat (g)</th>
+            <th md-column md-numeric>Carbs (g)</th>
+            <th md-column md-numeric>Protein (g)</th>
+            <th md-column md-numeric>Sodium (mg)</th>
+            <th md-column md-numeric>Calcium (%)</th>
+            <th md-column md-numeric>Iron (%)</th>
         </tr>
+        </thead>
+        <tbody md-body>
+        <tr md-row md-select="dessert" md-select-id="{{ dessert.name }}" md-auto-select
+            ng-repeat="dessert in desserts.data">
+            <td md-cell>{{ dessert.name }}</td>
+            <td md-cell>{{ dessert.calories.value }}</td>
+            <td md-cell>{{ dessert.fat.value | number: 1 }}</td>
+            <td md-cell>{{ dessert.carbs.value }}</td>
+            <td md-cell>{{ dessert.protein.value | number: 1 }}</td>
+            <td md-cell>{{ dessert.sodium.value }}</td>
+            <td md-cell>{{ dessert.calcium.value }}{{ dessert.calcium.unit }}</td>
+            <td md-cell>{{ dessert.iron.value }}{{ dessert.iron.unit }}</td>
+        </tr>
+        </tbody>
     </table>
-</div>
+</md-table-container>
+
+<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{ desserts.count }}"
+                     md-on-paginate="onPaginate" md-page-select></md-table-pagination>

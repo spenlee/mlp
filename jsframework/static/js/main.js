@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial', 'ngTable', 'ngTableToCsv'
+	'ui.router', 'restangular', 'ngMaterial', 'md.data.table'
 ])
 
 
@@ -22,12 +22,12 @@ var app = angular.module('drf-angular', [
 			url: '/packages',
 			templateUrl: '/static/templates/packageList.html',
 			controller: 'PackageCtrl',
-			resolve: {
+			/*resolve: {
 				'packages': ['Packages', function(Packages) {
 						return Packages.getList();
 					}
 				]
-			}
+			}*/
 		});
 
 	$urlRouterProvider.otherwise('/');
@@ -39,23 +39,21 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', 'packages', 'ngTableParams', '$filter', '$mdDialog', '$http', 'Packages',
-	function($scope, packages, ngTableParams, $filter, $mdDialog, $http, Packages){
+.controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'Packages',
+	function($scope, $filter, $mdDialog, $http, Packages){
 
-	$scope.items = packages;
+	$scope.selected = [];
+	$scope.packages = packages;
 
-	$scope.packages = new ngTableParams({
-		page: 1,
-		count: 10
-	}, {
-		getData: function ($defer, params) {
-			$scope.data = params.sorting() ? $filter('orderBy')($scope.items, params.orderBy()) : $scope.items;
-			$scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
-			$scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
-			params.total($scope.data.length);
-			$defer.resolve($scope.data);
-		}
-	});
+	$scope.query = {
+		order: 'name',
+		limit: 10,
+		page: 1
+	};
+
+	function getPackages(query) {
+		$scope.promise = Packages.getList();
+	}
 
 	$scope.addPackage = addPackage;
 
