@@ -3,7 +3,9 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
 from models import Package
+from models import Student
 from serializers import PackageSerializer
+from serializers import StudentSerializer
 
 
 def index(request):
@@ -25,3 +27,13 @@ class PackageRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return Package.objects.filter(archived=False)
+
+
+class StudentListCreateView(generics.ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+
+class StudentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
