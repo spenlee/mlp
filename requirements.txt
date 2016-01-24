@@ -1,3 +1,6 @@
 Django==1.8.2
 djangorestframework==3.1.2
 psycopg2==2.6.1
+ipdb
+configparser
+boto==2.39.0
