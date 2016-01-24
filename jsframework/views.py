@@ -9,6 +9,7 @@ from models import ScanData
 from serializers import PackageSerializer
 from serializers import StudentSerializer
 from serializers import ScanDataSerializer
+# http://cd25230b.ngrok.io/#/
 
 from django_drf_starter_project.scripts import enqueue
 
@@ -56,8 +57,7 @@ class ScanDataListCreateView(generics.ListCreateAPIView):
         scan_data = self.create(request, *args, **kwargs).data
 
         student = Student.objects.filter(first_name=scan_data['first_name'],
-                                         last_name=scan_data['last_name'],
-                                         address=scan_data['address'])
+                                         last_name=scan_data['last_name'])
         # empty queryset
         if not student:
             return Response(
