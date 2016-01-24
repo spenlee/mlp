@@ -1,5 +1,5 @@
 var app = angular.module('drf-angular', [
-	'ui.router', 'restangular', 'ngMaterial', 'md.data.table'
+	'ui.router', 'restangular', 'ngMaterial', 'md.data.table', 'ngSanitize', 'ngCsv'
 ])
 
 
@@ -39,8 +39,8 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'Packages', 'packages',
-	function($scope, $filter, $mdDialog, $http, Packages, packages){
+.controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'packages', 'Restangular',
+	function($scope, $filter, $mdDialog, $http, packages, Restangular){
 
 	$scope.selected = [];
 
@@ -52,9 +52,11 @@ var app = angular.module('drf-angular', [
 		page: 1
 	};
 
-	function getPackages() {
-		$scope.promise = Packages.getList().$promise;
-	}
+	$scope.getArray = getArray;
+
+	function getArray() {
+		return Restangular.stripRestangular($scope.selected);
+	};
 
 	$scope.addPackage = addPackage;
 
@@ -76,11 +78,6 @@ var app = angular.module('drf-angular', [
 
 		$http.patch('/api/packages/'+item.tracking_number, item)
 		.then( function(res) {
-			var i = 0;
-			while (item.tracking_number !== $scope.packages[i].tracking_number) {
-				i++;
-			}
-			$scope.packages.splice(i, 1);
 			$scope.showSuccess();
 		}, function(error) {
 			$scope.showFail();
@@ -98,7 +95,9 @@ var app = angular.module('drf-angular', [
 				.textContent('Yes.')
 				.ariaLabel('Success Dialog')
 				.ok('Got it!')
-		);
+		).then(function(res) {
+			window.location.reload();
+		});
 	};
 
 	$scope.showFail = showFail;
@@ -143,7 +142,9 @@ var app = angular.module('drf-angular', [
 				.textContent('Yes.')
 				.ariaLabel('Success Dialog')
 				.ok('Got it!')
-		);
+		).then(function(res) {
+			window.location.reload();
+		});
 	};
 
 	// X close in top corner
