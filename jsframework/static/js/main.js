@@ -3,11 +3,11 @@ var app = angular.module('drf-angular', [
 ])
 
 
-/*.config(function($mdThemingProvider) {
+.config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
-    .primaryPalette('blue-grey')
-    .accentPalette('orange');
-})*/
+    .primaryPalette('deep-purple')
+    .accentPalette('light-blue');
+})
 
 
 .config(function($stateProvider, $urlRouterProvider){
@@ -22,12 +22,12 @@ var app = angular.module('drf-angular', [
 			url: '/packages',
 			templateUrl: '/static/templates/packageList.html',
 			controller: 'PackageCtrl',
-			/*resolve: {
+			resolve: {
 				'packages': ['Packages', function(Packages) {
 						return Packages.getList();
 					}
 				]
-			}*/
+			}
 		});
 
 	$urlRouterProvider.otherwise('/');
@@ -39,10 +39,11 @@ var app = angular.module('drf-angular', [
 }])
 
 
-.controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'Packages',
-	function($scope, $filter, $mdDialog, $http, Packages){
+.controller('PackageCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'Packages', 'packages',
+	function($scope, $filter, $mdDialog, $http, Packages, packages){
 
 	$scope.selected = [];
+
 	$scope.packages = packages;
 
 	$scope.query = {
@@ -51,8 +52,8 @@ var app = angular.module('drf-angular', [
 		page: 1
 	};
 
-	function getPackages(query) {
-		$scope.promise = Packages.getList();
+	function getPackages() {
+		$scope.promise = Packages.getList().$promise;
 	}
 
 	$scope.addPackage = addPackage;
@@ -65,12 +66,6 @@ var app = angular.module('drf-angular', [
 			templateUrl:'/static/templates/addPackage.html',
 			controller: 'AddPackageController'
 		})
-		.then(function(item) {
-			$scope.packages['data'].push(item);
-			$scope.showSuccess();
-		}), function() {
-			$scope.showFail();
-		};
 	}
 
 	$scope.delPackage = delPackage;
@@ -82,10 +77,10 @@ var app = angular.module('drf-angular', [
 		$http.patch('/api/packages/'+item.tracking_number, item)
 		.then( function(res) {
 			var i = 0;
-			while (item.tracking_number !== $scope.packages['data'][i].tracking_number) {
+			while (item.tracking_number !== $scope.packages[i].tracking_number) {
 				i++;
 			}
-			$scope.packages['data'].splice(i, 1);
+			$scope.packages.splice(i, 1);
 			$scope.showSuccess();
 		}, function(error) {
 			$scope.showFail();
@@ -107,6 +102,7 @@ var app = angular.module('drf-angular', [
 	};
 
 	$scope.showFail = showFail;
+
 	function showFail() {
 		$mdDialog.show(
 			$mdDialog.alert()
@@ -130,13 +126,44 @@ var app = angular.module('drf-angular', [
 		Packages.post($scope.form)
 
 		.then(function(response) {
-			$mdDialog.hide(response);
-		})
+			$scope.showSuccess();
+		}, function(res) {
+			$scope.showFail();
+		});
 	}
 
+	$scope.showSuccess = showSuccess;
+
+	function showSuccess() {
+		$mdDialog.show(
+			$mdDialog.alert()
+				.parent(angular.element(document.querySelector('#popupContainer')))
+				.clickOutsideToClose(true)
+				.title('Success!')
+				.textContent('Yes.')
+				.ariaLabel('Success Dialog')
+				.ok('Got it!')
+		);
+	};
+
+	// X close in top corner
 	$scope.closeDialog = function () {
 		$mdDialog.cancel();
 	}
+
+	$scope.showFail = showFail;
+
+	function showFail() {
+		$mdDialog.show(
+			$mdDialog.alert()
+				.parent(angular.element(document.querySelector('#popupContainer')))
+				.clickOutsideToClose(true)
+				.title('Oh no!')
+				.textContent('Error occurred.')
+				.ariaLabel('Error Dialog')
+				.ok('Ok')
+		);
+	};
 }])
 
 
