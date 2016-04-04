@@ -1,87 +1,29 @@
-django-drf-angular-starter-project
-====
+Django drf angular starter framework was used: https://github.com/cleechtech/django-drf-starter-project
 
-[![endorse](https://api.coderwall.com/cleechtech/endorsecount.png)](https://coderwall.com/cleechtech)
+My Little Package Devpost link: http://devpost.com/software/my-little-package
 
-Create an app with django rest framework (drf) that uses angular.js on the frontend. This app will be built from the [django-drf-starter-project](https://github.com/jasonshark/django-drf-starter-project). If you are curious about how the django-drf-starter-project was built you can view the [tutorial here](https://coderwall.com/p/ympo6g/create-a-starter-template-for-working-with-django-rest-framework?p=1&q=).
+Problem Introduction
+=============
 
-![Let's get started](http://media.giphy.com/media/mxDZecDOOsWCA/giphy.gif)
+The problem that we focused on was inefficient mailing package distribution systems.
 
+These mailing systems are often rooted in the culture of organizations and the main issue with these systems are their heavy dependence on paper, writing, and manual methods for managing packages.
 
-### Create the project
-```
-$ git clone git@github.com:jasonshark/django-drf-starter-project.git
-$ mv django-drf-starter-project django-drf-angular-starter-project
-$ cd django-drf-angular-starter-project
-```
+Specifically, each of the creators of this project have lived in the Residence Halls at the University of Arizona in at least one instance.
+We have also been employed as resident assistants, and are very familiar with the package distribution system employed in each residence hall today.
 
-This downloads the code from part one and renames the project to angular name.
+Packages are managed manually by desk assistants. A binder with written logs containing student and package related information sits at the mailing desk and residents discover that they have packages ready for pick-up when they find package description slips in their mailboxes. These slips of information are filled out by hand by desk assistants as well.
 
-### Set up virtual environment
+Overall, residents check their mailboxes infrequently and packages may pile-up in storage, especially after certain delivery rushes throughout the year.
+The system is inefficient and is similar to a frontend interface polling a backend server at intervals of time to check if anything has changed.
 
-```
-$ source ~/.bash_profile
-$ mkvirtualenv django-drf-angular-starter-project # OR $ workon django-drf-angular-starter-project if you've already created the virtual environment
-$ lsvirtualenv
-$ pip install -r requirements.txt
-```
+Solution
+===========
 
-On my computer I have to source .bash_profile. I'm lazy and haven't fixed this. Hopefully you have [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/) set up properly on your own machine. The last step installs django and django rest framework from requirements.txt.
+Our vision is of a more automated and digitized system for distributing packages. Desk assistants use our developed mobile application that includes use of open source text recognition software to scan packages. This information is immediately logged into our postgresql database supported by a django server with an angular-material frontend interface for digital management of the package database through a table view with export CSV functionality for keeping track of information and add/remove operations, used when necessary.
 
+The django server is able to interface with the database as well as other applications. Cross-references to student information as well as error checking is handled in the server. Given scanned package information (address block) and referencing student information, all the information related to the mailing packages is collected, and the server interfaces with Amazon EC2 queuing services and is tasked with using Cisco Tropo APIs to send SMS notifications to the owners of the packages received by the organization.
 
-### Modify view
+As a result, this design allows for enhanced mailing package management, that within seconds, is able to log and determine package information and send SMS/Email notification to receivers, thus bypassing hand-written methods of logging mail, manual notification systems, and frequent polling inefficiencies by residents to check if a package has arrived.
 
-In the views last time we used django templates, now we want angular to handle the front end. Django will provide one template (`jsframework/templates/jsframework/base.html`). The rest of our frontend code will be stored in `jsframework/static/templates`. Angular will access this using [ui-router](https://github.com/angular-ui/ui-router).
-
-Send the base template 
-
-**jsframework/views.py:**
-```
-from django.shortcuts import render
-
-def index(request):
-    return render(request, 'jsframework/base.html')
-```
-
-Then in base.html modify it to load angular and use angular views. Delete the django template tags, add:
-
-```
-<html ng-app='drf-angular'>
-
-...
-
-<div ui-view></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.js"></script>
-```
-
-### Write angular
-![don't get carried away](http://cdn.meme.am/instances/500x/62550074.jpg)
-
-Create an app, routes and a controller:
-
-```
-var app = angular.module('drf-angular', [
-    'ui.router'
-]);
-
-app.config(function($stateProvider, $urlRouterProvider){
-    $stateProvider
-        .state('home', {
-            url: '/',
-            templateUrl: '/static/templates/home.html',
-            controller: 'MainCtrl'
-        });
-
-    $urlRouterProvider.otherwise('/');
-});
-
-app.controller('MainCtrl', function($scope){
-    $scope.test = "I come from the angularz";
-});
-```
-
-All of our angular templates will live in `jsframework/static/templates`. Reference them using the path specified in `templateUrl`.
-
-All our routing will have `/#/`. Also we have not invented any models or serializers, but we've set up a server and handling angular on the frontend.
+This methodology can also be applied as a solution/design to other problem sets as well.
